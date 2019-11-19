@@ -7,7 +7,7 @@ public class GameManagerVR : MonoBehaviour
     public int m_NumRoundsToWin = 5;            // The number of rounds a single player has to win to win the game.
     public float m_StartDelay = 3f;             // The delay between the start of RoundStarting and RoundPlaying phases.
     public float m_EndDelay = 3f;               // The delay between the end of RoundPlaying and RoundEnding phases.
-    // public CameraControl m_CameraControl;       // Reference to the CameraControl script for control during different phases.
+    public CameraControl m_CameraControl;       // Reference to the CameraControl script for control during different phases.
     public Text m_MessageText;                  // Reference to the overlay Text to display winning text, etc.
     public GameObject m_TankPrefab;             // Reference to the prefab the players will control.
     public TankManager[] m_Tanks;               // A collection of managers for enabling and disabling different aspects of the tanks.
@@ -27,7 +27,7 @@ public class GameManagerVR : MonoBehaviour
         m_EndWait = new WaitForSeconds (m_EndDelay);
 
         SpawnAllTanks();
-        // SetCameraTargets();
+        SetCameraTargets();
 
         // Once the tanks have been created and the camera is using them as targets, start the game.
         StartCoroutine (GameLoop ());
@@ -47,27 +47,28 @@ public class GameManagerVR : MonoBehaviour
 
             if(i == 0) {
                 m_Tanks[i].m_Instance.GetComponentInChildren<Camera>().enabled = true;
+                m_Tanks[i].m_Instance.GetComponentInChildren<AudioListener>().enabled = true;
             }
 
         }
     }
 
 
-    // private void SetCameraTargets()
-    // {
-    //     // Create a collection of transforms the same size as the number of tanks.
-    //     Transform[] targets = new Transform[m_Tanks.Length];
+    private void SetCameraTargets()
+    {
+        // Create a collection of transforms the same size as the number of tanks.
+        Transform[] targets = new Transform[m_Tanks.Length];
 
-    //     // For each of these transforms...
-    //     for (int i = 0; i < targets.Length; i++)
-    //     {
-    //         // ... set it to the appropriate tank transform.
-    //         targets[i] = m_Tanks[i].m_Instance.transform;
-    //     }
+        // For each of these transforms...
+        for (int i = 0; i < targets.Length; i++)
+        {
+            // ... set it to the appropriate tank transform.
+            targets[i] = m_Tanks[i].m_Instance.transform;
+        }
 
-    //     // These are the targets the camera should follow.
-    //     m_CameraControl.m_Targets = targets;
-    // }
+        // These are the targets the camera should follow.
+        m_CameraControl.m_Targets = targets;
+    }
 
 
     // This is called from start and will run each phase of the game one after another.
@@ -104,7 +105,7 @@ public class GameManagerVR : MonoBehaviour
         DisableTankControl ();
 
         // Snap the camera's zoom and position to something appropriate for the reset tanks.
-        // m_CameraControl.SetStartPositionAndSize ();
+        m_CameraControl.SetStartPositionAndSize ();
 
         // Increment the round number and display text showing the players what round it is.
         m_RoundNumber++;
