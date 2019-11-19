@@ -14,8 +14,8 @@ public class TankHeadMovement : MonoBehaviour
 
     private void Update()
     {
-        m_Xvalue = Input.GetAxis("Mouse X");
-        m_Yvalue = Input.GetAxis("Mouse Y");
+        m_Xvalue = Input.GetAxis("AxisX");
+        m_Yvalue = Input.GetAxis("AxisY");
     }
 
     private void FixedUpdate()
