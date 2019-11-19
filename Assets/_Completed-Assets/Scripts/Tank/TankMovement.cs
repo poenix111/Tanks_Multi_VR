@@ -70,8 +70,8 @@ namespace Complete
         }
 
           public override void OnStartLocalPlayer()
-    {
-        MeshRenderer[] renderers = m_Rigidbody.GetComponentsInChildren<MeshRenderer> ();
+        {
+            MeshRenderer[] renderers = m_Rigidbody.GetComponentsInChildren<MeshRenderer> ();
 
             // Go through all the renderers...
             for (int i = 0; i < renderers.Length; i++)
@@ -79,11 +79,11 @@ namespace Complete
                 // ... set their material color to the color specific to this tank.
                 renderers[i].material.color = Color.red;
             }
-    }
+        }
         private void Update ()
         {
             if (!isLocalPlayer)
-            return;
+                return;
 
             m_MovementInputValue = Input.GetAxis (m_MovementAxisName);
             m_TurnInputValue = Input.GetAxis (m_TurnAxisName);
