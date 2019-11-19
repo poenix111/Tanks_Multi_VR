@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
-public class TankShooting : MonoBehaviour
+public class TankShootingVR : NetworkBehaviour
 {
     public int m_PlayerNumber = 1;              // Used to identify the different players.
     public Rigidbody m_Shell;                   // Prefab of the shell.
@@ -32,7 +33,7 @@ public class TankShooting : MonoBehaviour
     private void Start ()
     {
         // The fire axis is based on the player number.
-        m_FireButton = "Fire" + m_PlayerNumber;
+        m_FireButton = "Fire";
 
         // The rate that the launch force charges up is the range of possible forces by the max charge time.
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
@@ -41,6 +42,8 @@ public class TankShooting : MonoBehaviour
 
     private void Update ()
     {
+        if (!isLocalPlayer)
+                return;
         // The slider should have a default value of the minimum launch force.
         m_AimSlider.value = m_MinLaunchForce;
 
@@ -49,7 +52,7 @@ public class TankShooting : MonoBehaviour
         {
             // ... use the max force and launch the shell.
             m_CurrentLaunchForce = m_MaxLaunchForce;
-            Fire ();
+            CmdFire ();
         }
         // Otherwise, if the fire button has just started being pressed...
         else if (Input.GetButtonDown (m_FireButton))
@@ -74,12 +77,12 @@ public class TankShooting : MonoBehaviour
         else if (Input.GetButtonUp (m_FireButton) && !m_Fired)
         {
             // ... launch the shell.
-            Fire ();
+            CmdFire ();
         }
     }
 
-
-    private void Fire ()
+    [Command]
+    private void CmdFire ()
     {
         // Set the fired flag so only Fire is only called once.
         m_Fired = true;
@@ -90,7 +93,7 @@ public class TankShooting : MonoBehaviour
 
         // Set the shell's velocity to the launch force in the fire position's forward direction.
         shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward; ;
-
+        NetworkServer.Spawn(shellInstance.gameObject);
         // Change the clip to the firing clip and play it.
         m_ShootingAudio.clip = m_FireClip;
         m_ShootingAudio.Play ();

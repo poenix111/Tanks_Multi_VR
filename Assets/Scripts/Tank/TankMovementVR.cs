@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-
-public class TankMovement : MonoBehaviour
+using UnityEngine.Networking;
+public class TankMovementVR : NetworkBehaviour
 {
     public int m_PlayerNumber = 1;
     public float m_Speed = 12f;
@@ -41,8 +41,8 @@ public class TankMovement : MonoBehaviour
 
     private void Start()
     {
-        m_MovementAxisName = "Vertical" + m_PlayerNumber;
-        m_TurnAxisName = "Horizontal" + m_PlayerNumber;
+        m_MovementAxisName = "Vertical";
+        m_TurnAxisName = "Horizontal";
 
         m_OriginalPitch = m_MovementAudio.pitch;
     }
@@ -51,12 +51,24 @@ public class TankMovement : MonoBehaviour
     // Store the player's input and make sure the audio for the engine is playing.
     private void Update()
     {
+        if (!isLocalPlayer)
+                return;
         m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
         m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
 
         EngineAudio();
     }
+    public override void OnStartLocalPlayer()
+        {
+            MeshRenderer[] renderers = m_Rigidbody.GetComponentsInChildren<MeshRenderer> ();
 
+            // Go through all the renderers...
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                // ... set their material color to the color specific to this tank.
+                renderers[i].material.color = Color.red;
+            }
+        }
 
     // Play the correct audio clip based on whether or not the tank is moving and what audio is currently playing.
     private void EngineAudio()
@@ -90,6 +102,8 @@ public class TankMovement : MonoBehaviour
     // Move and turn the tank.
     private void FixedUpdate()
     {
+        if (!isLocalPlayer)
+            return;
         // Adjust the rigidbodies position and orientation in FixedUpdate.
         Move ();
         Turn ();
