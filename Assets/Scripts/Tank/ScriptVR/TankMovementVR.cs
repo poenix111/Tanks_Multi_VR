@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
-public class TankMovementVR : NetworkBehaviour
+public class TankMovementVR : MonoBehaviour
 {
     public int m_PlayerNumber = 1;
     public float m_Speed = 12f;
@@ -17,11 +17,16 @@ public class TankMovementVR : NetworkBehaviour
     private float m_MovementInputValue;
     private float m_TurnInputValue;
     private float m_OriginalPitch;
-
-
+    //public Camera camara;
     private void Awake()
     {
+
         m_Rigidbody = GetComponent<Rigidbody>();
+        GameObject head = m_Rigidbody.GetComponent<TankHeadMovement>().m_TankHead;
+        //camara.transform.position = head.transform.position;
+
+
+
     }
 
 
@@ -51,24 +56,12 @@ public class TankMovementVR : NetworkBehaviour
     // Store the player's input and make sure the audio for the engine is playing.
     private void Update()
     {
-        if (!isLocalPlayer)
-                return;
+
         m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
         m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
 
         EngineAudio();
     }
-    public override void OnStartLocalPlayer()
-        {
-            MeshRenderer[] renderers = m_Rigidbody.GetComponentsInChildren<MeshRenderer> ();
-
-            // Go through all the renderers...
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                // ... set their material color to the color specific to this tank.
-                renderers[i].material.color = Color.red;
-            }
-        }
 
     // Play the correct audio clip based on whether or not the tank is moving and what audio is currently playing.
     private void EngineAudio()
@@ -102,11 +95,9 @@ public class TankMovementVR : NetworkBehaviour
     // Move and turn the tank.
     private void FixedUpdate()
     {
-        if (!isLocalPlayer)
-            return;
         // Adjust the rigidbodies position and orientation in FixedUpdate.
-        Move ();
-        Turn ();
+        Move();
+        Turn();
     }
 
 
@@ -128,9 +119,9 @@ public class TankMovementVR : NetworkBehaviour
         float turn = m_TurnInputValue * m_TurnSpeed * Time.deltaTime;
 
         // Make this into a rotation in the y axis.
-        Quaternion turnRotation = Quaternion.Euler (0f, turn, 0f);
+        Quaternion turnRotation = Quaternion.Euler(0f, turn, 0f);
 
         // Apply this rotation to the rigidbody's rotation.
-        m_Rigidbody.MoveRotation (m_Rigidbody.rotation * turnRotation);
+        m_Rigidbody.MoveRotation(m_Rigidbody.rotation * turnRotation);
     }
 }

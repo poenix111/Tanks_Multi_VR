@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.Networking;
 
-public class TankShootingVR : NetworkBehaviour
+public class TankShootingVR : MonoBehaviour
 {
     public int m_PlayerNumber = 1;              // Used to identify the different players.
     public Rigidbody m_Shell;                   // Prefab of the shell.
@@ -42,8 +42,6 @@ public class TankShootingVR : NetworkBehaviour
 
     private void Update ()
     {
-        if (!isLocalPlayer)
-                return;
         // The slider should have a default value of the minimum launch force.
         m_AimSlider.value = m_MinLaunchForce;
 
@@ -52,7 +50,7 @@ public class TankShootingVR : NetworkBehaviour
         {
             // ... use the max force and launch the shell.
             m_CurrentLaunchForce = m_MaxLaunchForce;
-            CmdFire ();
+            Fire ();
         }
         // Otherwise, if the fire button has just started being pressed...
         else if (Input.GetButtonDown (m_FireButton))
@@ -77,12 +75,11 @@ public class TankShootingVR : NetworkBehaviour
         else if (Input.GetButtonUp (m_FireButton) && !m_Fired)
         {
             // ... launch the shell.
-            CmdFire ();
+            Fire ();
         }
     }
 
-    [Command]
-    private void CmdFire ()
+    private void Fire ()
     {
         // Set the fired flag so only Fire is only called once.
         m_Fired = true;
@@ -93,7 +90,6 @@ public class TankShootingVR : NetworkBehaviour
 
         // Set the shell's velocity to the launch force in the fire position's forward direction.
         shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward; ;
-        NetworkServer.Spawn(shellInstance.gameObject);
         // Change the clip to the firing clip and play it.
         m_ShootingAudio.clip = m_FireClip;
         m_ShootingAudio.Play ();
