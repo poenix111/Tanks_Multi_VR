@@ -33,8 +33,8 @@ public class TankManager
 
         MeshRenderer[] renderers = m_Instance.GetComponentsInChildren<MeshRenderer>();
 
-        m_Instance.GetComponentInChildren<Camera>().enabled = true;
-        m_Instance.GetComponentInChildren<Camera>().targetDisplay = m_PlayerNumber;
+        // m_Instance.GetComponentInChildren<Camera>().enabled = true;
+        // m_Instance.GetComponentInChildren<Camera>().targetDisplay = m_PlayerNumber;
 
         for (int i = 0; i < renderers.Length; i++)
         {

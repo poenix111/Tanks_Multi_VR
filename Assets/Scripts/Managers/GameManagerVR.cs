@@ -45,10 +45,11 @@ public class GameManagerVR : MonoBehaviour
             m_Tanks[i].m_PlayerNumber = i + 1;
             m_Tanks[i].Setup();
 
-            // if(i == 0) {
-            //     m_Tanks[i].m_Instance.GetComponentInChildren<Camera>().enabled = true;
-            //     m_Tanks[i].m_Instance.GetComponentInChildren<AudioListener>().enabled = true;
-            // }
+            if(i == 0) {
+                m_Tanks[i].m_Instance.GetComponentInChildren<Camera>().enabled = true;
+                m_Tanks[i].m_Instance.GetComponentInChildren<AudioListener>().enabled = true;
+                m_Tanks[i].m_Instance.GetComponent<TankHeadMovement>().m_TankHead.GetComponent<MeshRenderer>().enabled = false;
+            }
 
         }
     }
