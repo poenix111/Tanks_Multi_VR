@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
+using Project.Networking;
 public class TankMovementVR : MonoBehaviour
 {
     public int m_PlayerNumber = 1;
@@ -17,6 +17,10 @@ public class TankMovementVR : MonoBehaviour
     private float m_MovementInputValue;
     private float m_TurnInputValue;
     private float m_OriginalPitch;
+    [Header("Class reference")]
+    [SerializeField]
+    private NetworkIdentity networkIdentity;
+    private Camera camara;
     //public Camera camara;
     private void Awake()
     {
@@ -25,7 +29,9 @@ public class TankMovementVR : MonoBehaviour
         GameObject head = m_Rigidbody.GetComponent<TankHeadMovement>().m_TankHead;
         //camara.transform.position = head.transform.position;
 
-
+        if(networkIdentity.GetIsControlling()) {
+            
+        }
 
     }
 
@@ -95,6 +101,9 @@ public class TankMovementVR : MonoBehaviour
     // Move and turn the tank.
     private void FixedUpdate()
     {
+        if(!networkIdentity.GetIsControlling()){
+            return;
+        }
         // Adjust the rigidbodies position and orientation in FixedUpdate.
         Move();
         Turn();
@@ -104,6 +113,7 @@ public class TankMovementVR : MonoBehaviour
     // Adjust the position of the tank based on the player's input.
     private void Move()
     {
+        
         // Create a vector in the direction the tank is facing with a magnitude based on the input, speed and the time between frames.
         Vector3 movement = transform.forward * m_MovementInputValue * m_Speed * Time.deltaTime;
 
@@ -123,5 +133,9 @@ public class TankMovementVR : MonoBehaviour
 
         // Apply this rotation to the rigidbody's rotation.
         m_Rigidbody.MoveRotation(m_Rigidbody.rotation * turnRotation);
+    }
+
+    public NetworkIdentity GetNetworkIdentity(){
+        return networkIdentity;
     }
 }
