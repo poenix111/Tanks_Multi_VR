@@ -5,12 +5,14 @@ public class TankMovement : MonoBehaviour
     public int m_PlayerNumber = 1;
     public float m_Speed = 12f;
     public float m_TurnSpeed = 150f;
+    public GameObject m_Head;
     public AudioSource m_MovementAudio;
     public AudioClip m_EngineIdling;
     public AudioClip m_EngineDriving;
     public float m_PitchRange = 0.2f;
 
 
+    private Quaternion headRotation; 
     private string m_MovementAxisName;
     private string m_TurnAxisName;
     private Rigidbody m_Rigidbody;
@@ -22,6 +24,7 @@ public class TankMovement : MonoBehaviour
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
+        headRotation = m_Head.transform.rotation;
     }
 
 
@@ -95,6 +98,10 @@ public class TankMovement : MonoBehaviour
         Turn ();
     }
 
+    void LateUpdate()
+    {
+            m_Head.transform.rotation = headRotation;
+    }
 
     // Adjust the position of the tank based on the player's input.
     private void Move()
