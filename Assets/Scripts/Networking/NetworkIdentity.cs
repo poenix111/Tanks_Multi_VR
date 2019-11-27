@@ -28,13 +28,14 @@ namespace Project.Networking
         // Update is called once per frame
         public void SetControllerID(string ID)
         {
-            id = ID;
-            isControlling = (NetworkingClient.ClientID == ID)? true: false;
+            print("Entro a setcontrollerid");
+            this.id = ID;
+            this.isControlling = (NetworkingClient.ClientID == ID) ? true : false;
             
         }
 
-        public void SetSocketReference(SocketIOComponent socket) {
-            this.socket = socket;
+        public void SetSocketReference(SocketIOComponent socket1) {
+            this.socket = socket1;
         }
 
         public string GetID() {

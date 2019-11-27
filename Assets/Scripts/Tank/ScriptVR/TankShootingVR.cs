@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Networking;
-
+using Project.Networking;
 public class TankShootingVR : MonoBehaviour
 {
     public int m_PlayerNumber = 1;              // Used to identify the different players.
@@ -21,12 +20,14 @@ public class TankShootingVR : MonoBehaviour
     private float m_ChargeSpeed;                // How fast the launch force increases, based on the max charge time.
     private bool m_Fired;                       // Whether or not the shell has been launched with this button press.
 
-
+    private NetworkIdentity networkIdentity;
+    private ShellData shellData;
     private void OnEnable()
     {
         // When the tank is turned on, reset the launch force and the UI
         m_CurrentLaunchForce = m_MinLaunchForce;
         m_AimSlider.value = m_MinLaunchForce;
+        networkIdentity = GetComponent<TankMovementVR>().GetNetworkIdentity();
     }
 
 
@@ -37,11 +38,17 @@ public class TankShootingVR : MonoBehaviour
 
         // The rate that the launch force charges up is the range of possible forces by the max charge time.
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
+        shellData = new ShellData();
+        shellData.position = new Position();
+        shellData.direction = new Position();
     }
 
 
     private void Update ()
     {
+        if(!networkIdentity.GetIsControlling()) {
+            return;
+        }
         // The slider should have a default value of the minimum launch force.
         m_AimSlider.value = m_MinLaunchForce;
 
@@ -78,21 +85,29 @@ public class TankShootingVR : MonoBehaviour
             Fire ();
         }
     }
-
     private void Fire ()
     {
         // Set the fired flag so only Fire is only called once.
         m_Fired = true;
 
         // Create an instance of the shell and store a reference to it's rigidbody.
-        Rigidbody shellInstance =
-            Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
-
+        //Rigidbody shellInstance =
+          //  Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+        
         // Set the shell's velocity to the launch force in the fire position's forward direction.
-        shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward; ;
+        Vector3 velocity = m_CurrentLaunchForce * m_FireTransform.forward;
         // Change the clip to the firing clip and play it.
         m_ShootingAudio.clip = m_FireClip;
         m_ShootingAudio.Play ();
+        shellData.position.x = m_FireTransform.position.x;
+        shellData.position.y = m_FireTransform.position.y;
+        shellData.position.z = m_FireTransform.position.z;
+        shellData.direction.x = velocity.x + 20;
+        shellData.direction.y = velocity.y + 20;
+        shellData.direction.z = velocity.z + 20;
+
+        networkIdentity.GetSocket().Emit("fireShell", new JSONObject(JsonUtility.ToJson(shellData)));
+
 
         // Reset the launch force.  This is a precaution in case of missing button events.
         m_CurrentLaunchForce = m_MinLaunchForce;
