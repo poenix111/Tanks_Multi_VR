@@ -13,21 +13,33 @@ public class ObjetivosManager : MonoBehaviour
 
     private int hits = 0;
     private float m_TiempoRestante;
+    private int m_ObjetivosVivos = 0;
 
     public void Start()
     {
         m_TiempoRestante = m_TiempoLimite;
+        m_ObjetivosVivos = transform.childCount;
+        m_TextTiempo.text = m_ObjetivosVivos.ToString();
     }
 
     public void Update()
     {
-        m_TiempoRestante -= Time.deltaTime;
-        if (m_TiempoRestante < 0)
+        if (m_ObjetivosVivos == 0)
         {
-            m_TextoCentral.text = "Tiempo agotado";
-            m_TextTiempo.text = "0";
-        }else {
-            m_TextTiempo.text = ((int) m_TiempoRestante).ToString();
+            m_TextoCentral.text = "Has ganado";
+        }
+        else
+        {
+            m_TiempoRestante -= Time.deltaTime;
+            if (m_TiempoRestante < 0)
+            {
+                m_TextoCentral.text = "Tiempo agotado";
+                m_TextTiempo.text = "0";
+            }
+            else
+            {
+                m_TextTiempo.text = ((int)m_TiempoRestante).ToString();
+            }
         }
     }
 
@@ -35,8 +47,8 @@ public class ObjetivosManager : MonoBehaviour
     {
         if (m_TiempoRestante > 0)
         {
-            hits++;
-            m_TextHits.text = hits.ToString();
+            m_ObjetivosVivos--;
+            m_TextHits.text = m_ObjetivosVivos.ToString();
         }
     }
 
