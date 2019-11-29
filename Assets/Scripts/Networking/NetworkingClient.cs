@@ -86,13 +86,14 @@ namespace Project.Networking
                 float y = E.data["position"]["y"].f;
                 float z = E.data["position"]["z"].f;
                 Debug.LogFormat("Server wants us to spawn a (0)", name);
-
+                // Vector3 aux = new Vector3(x, y, z);
+                // var actualPosition = new GameObject();
+                // actualPosition.transform.position = aux;
                 if (!serverObjects.ContainsKey(id))
                 {
                     ServerObjectData sod = serverSpawnables.GetObjectByName(name);
                     var spawnedObject = Instantiate(sod.prefab, networkContainer);
                     spawnedObject.transform.position = new Vector3(x, y, z);
-
                     var ni = spawnedObject.GetComponent<NetworkIdentity>();
                     ni.SetControllerID(id);
                     ni.SetSocketReference(this);
@@ -102,11 +103,11 @@ namespace Project.Networking
                         float directionX = E.data["direction"]["x"].f;
                         float directionY = E.data["direction"]["y"].f;
                         float directionZ = E.data["direction"]["z"].f;
-                        
+                        float inclinacion = (directionY - y) / (directionX - x);
                         //something with atan2
 
                         float rot = Mathf.Atan2(directionX, directionY) * Mathf.Rad2Deg;
-                        Vector3 currentRotation = new Vector3(0,0, rot - 90);
+                        Vector3 currentRotation = new Vector3(0, 0, rot - 90);
 
                         spawnedObject.transform.rotation = Quaternion.Euler(currentRotation);
 
@@ -146,6 +147,7 @@ namespace Project.Networking
         public string id;
         public Position position;
         public Position direction;
+        public float force;
     }
 }
 

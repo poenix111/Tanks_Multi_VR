@@ -37,6 +37,7 @@ setInterval(() => {
             for (var playerID in players) {
                 sockets[playerID].emit('updatePosition', returnData);
             }
+            console.log(shell.position)
 
         }
     });
@@ -95,7 +96,7 @@ io.on('connection', function (socket) {
         shell.direction.x = data.direction.x;
         shell.direction.y = data.direction.y;
         shell.direction.z = data.direction.z;
-
+        shell.speed = data.force;
         shells.push(shell);
         var returnData = {
             name: shell.name,

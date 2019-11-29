@@ -95,16 +95,18 @@ public class TankShootingVR : MonoBehaviour
           //  Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
         
         // Set the shell's velocity to the launch force in the fire position's forward direction.
-        Vector3 velocity = m_CurrentLaunchForce * m_FireTransform.forward;
         // Change the clip to the firing clip and play it.
         m_ShootingAudio.clip = m_FireClip;
         m_ShootingAudio.Play ();
         shellData.position.x = m_FireTransform.position.x;
         shellData.position.y = m_FireTransform.position.y;
         shellData.position.z = m_FireTransform.position.z;
-        shellData.direction.x = velocity.x + 20;
-        shellData.direction.y = velocity.y + 20;
-        shellData.direction.z = velocity.z + 20;
+        shellData.direction.x = m_FireTransform.forward.x;
+        shellData.direction.y =  m_FireTransform.forward.y;
+        shellData.direction.z =  m_FireTransform.forward.z;
+        shellData.force = m_CurrentLaunchForce;
+        
+        
 
         networkIdentity.GetSocket().Emit("fireShell", new JSONObject(JsonUtility.ToJson(shellData)));
 
