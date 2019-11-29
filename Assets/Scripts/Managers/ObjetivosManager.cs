@@ -1,28 +1,44 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ObjetivosManager : MonoBehaviour
 {
 
-    public GameObject m_ObjetivoPrefab;
-    public Transform[] m_SpawnPoints;
+    public int m_TiempoLimite = 15;
+    public Text m_TextTiempo;
+    public Text m_TextHits;
+    public Text m_TextoCentral;
 
-    private List<GameObject> m_Objetivos;
+    private int hits = 0;
+    private float m_TiempoRestante;
 
-    // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
-        m_Objetivos = new List<GameObject>();
-        foreach (Transform trans in m_SpawnPoints)
+        m_TiempoRestante = m_TiempoLimite;
+    }
+
+    public void Update()
+    {
+        m_TiempoRestante -= Time.deltaTime;
+        if (m_TiempoRestante < 0)
         {
-            Instantiate(m_ObjetivoPrefab, trans.position, trans.rotation);
+            m_TextoCentral.text = "Tiempo agotado";
+            m_TextTiempo.text = "0";
+        }else {
+            m_TextTiempo.text = ((int) m_TiempoRestante).ToString();
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void updateHits()
     {
-        
+        if (m_TiempoRestante > 0)
+        {
+            hits++;
+            m_TextHits.text = hits.ToString();
+        }
     }
+
+
 }
