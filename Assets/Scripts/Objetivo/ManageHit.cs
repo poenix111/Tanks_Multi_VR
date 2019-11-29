@@ -7,7 +7,7 @@ public class ManageHit : MonoBehaviour
     // Metodo que se llama cuando es golpeado el cubo
     public void OnTriggerEnter(Collider other)
     {
-        Destroy(this.gameObject);
+        this.gameObject.SetActive(false);
         GetComponentInParent<ObjetivosManager>().updateHits();
     }
     public void Start()
