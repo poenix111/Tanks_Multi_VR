@@ -3,6 +3,7 @@ using System.Collections;
 public class ManageHit : MonoBehaviour
 {
     private float timer = 0f;
+    public int m_SpinValue = 90;
     private Color m_Colorcito;
     // Metodo que se llama cuando es golpeado el cubo
     public void OnTriggerEnter(Collider other)
@@ -12,9 +13,11 @@ public class ManageHit : MonoBehaviour
     }
     public void Start()
     {
+
     }
     public void Update()
     {   
+        transform.Rotate(Vector3.up * m_SpinValue * Time.deltaTime);
         timer += Time.deltaTime;
         
         if(timer > 2.0f) {
